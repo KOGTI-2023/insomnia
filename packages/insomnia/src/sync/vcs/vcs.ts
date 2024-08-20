@@ -60,6 +60,7 @@ export function chunkArray<T>(arr: T[], chunkSize: number) {
 export class VCS {
   _store: Store;
   _driver: BaseDriver;
+  // stored by key `/projects/${project.id}/meta.json`
   _backendProject: BackendProject | null;
   _conflictHandler?: ConflictHandler | null;
   _stageByBackendProjectId: Record<string, Stage> = {};

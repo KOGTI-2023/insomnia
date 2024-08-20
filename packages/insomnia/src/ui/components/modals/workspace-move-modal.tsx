@@ -2,19 +2,19 @@ import React, { type FC, useEffect, useRef, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useFetcher, useNavigation, useParams, useSubmit } from 'react-router-dom';
 
+import { database } from '../../../common/database';
 import { getWorkspaceLabel } from '../../../common/get-workspace-label';
 import { strings } from '../../../common/strings';
+import { sortProjects } from '../../../models/helpers/project';
+import * as models from '../../../models/index';
 import type { Project } from '../../../models/project';
 import type { Workspace } from '../../../models/workspace';
+import { useOrganizationLoaderData } from '../../routes/organization';
 import { Modal, type ModalHandle, type ModalProps } from '../base/modal';
 import { ModalBody } from '../base/modal-body';
 import { ModalFooter } from '../base/modal-footer';
 import { ModalHeader } from '../base/modal-header';
 import { Icon } from '../icon';
-import { useOrganizationLoaderData } from '../../routes/organization';
-import { sortProjects } from '../../../models/helpers/project';
-import { database } from '../../../common/database';
-import * as models from '../../../models/index';
 
 interface WorkspaceMoveModalProps extends ModalProps {
   workspace: Workspace;

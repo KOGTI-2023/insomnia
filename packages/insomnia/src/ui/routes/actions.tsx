@@ -455,11 +455,22 @@ export const moveWorkspaceAction: ActionFunction = async ({ request, params }) =
   if (workspace?.parentId === projectId) {
     return;
   }
-  const flushId = await database.bufferChanges();
   await models.workspace.update(workspace, {
     parentId: projectId,
   });
-  await database.flushChanges(flushId);
+  try {
+    const { id } = await models.userSession.getOrCreate();
+    // Mark for sync if logged in and in the expected project
+    if (id) {
+      const vcs = VCSInstance();
+      await initializeLocalBackendProjectAndMarkForSync({
+        vcs: vcs.newInstance(),
+        workspace,
+      });
+    }
+  } catch (e) {
+    console.warn('Failed to initialize local backend project', e);
+  }
   return redirect(`/organization/${orgId}/project/${projectId}`);
 }
 
