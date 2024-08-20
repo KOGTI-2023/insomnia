@@ -445,6 +445,24 @@ export const deleteWorkspaceAction: ActionFunction = async ({
   return redirect(`/organization/${organizationId}/project/${projectId}`);
 };
 
+export const moveWorkspaceAction: ActionFunction = async ({ request, params }) => {
+  const formData = await request.formData();
+  const workspaceId = formData.get('workspaceId');
+  const orgId = formData.get('orgId');
+  const projectId = formData.get('projectId');
+  console.log('workspaceId', workspaceId, 'orgId', orgId, 'projectId', projectId);
+  const workspace = await models.workspace.getById(workspaceId);
+  if (workspace?.parentId === projectId) {
+    return;
+  }
+  const flushId = await database.bufferChanges();
+  await models.workspace.update(workspace, {
+    parentId: projectId,
+  });
+  await database.flushChanges(flushId);
+  return redirect(`/organization/${orgId}/project/${projectId}`);
+}
+
 export const duplicateWorkspaceAction: ActionFunction = async ({ request, params }) => {
   const { organizationId } = params;
   invariant(organizationId, 'Organization Id is required');

@@ -24,6 +24,8 @@ import { ImportModal } from '../modals/import-modal';
 import { WorkspaceDuplicateModal } from '../modals/workspace-duplicate-modal';
 import { WorkspaceSettingsModal } from '../modals/workspace-settings-modal';
 import { SvgIcon } from '../svg-icon';
+import { set } from 'date-fns';
+import { WorkspaceMoveModal } from '../modals/workspace-move-modal';
 
 interface Props {
   workspace: Workspace;
@@ -85,6 +87,7 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
   const { workspace, mockServer, project, projects } = props;
   const fetcher = useFetcher();
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+  const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -110,6 +113,13 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
           </Button>
         }
       >
+        <DropdownItem aria-label='Move'>
+          <ItemContent
+            label="Move"
+            icon="arrow-right-arrow-left"
+            onClick={() => setIsMoveModalOpen(true)}
+          />
+        </DropdownItem>
         <DropdownItem aria-label='Duplicate'>
           <ItemContent
             label="Duplicate"
@@ -187,6 +197,12 @@ export const WorkspaceCardDropdown: FC<Props> = props => {
           </DropdownItem>
         </DropdownSection>
       </Dropdown>
+      {isMoveModalOpen && (
+        <WorkspaceMoveModal
+          onHide={() => setIsMoveModalOpen(false)}
+          workspace={workspace}
+        />
+      )}
       {isDuplicateModalOpen && (
         <WorkspaceDuplicateModal
           onHide={() => setIsDuplicateModalOpen(false)}

@@ -36,6 +36,7 @@ import { Migrate } from './routes/onboarding.migrate';
 import Root from './routes/root';
 import { initializeSentry } from './sentry';
 
+// TODO: VSCode's 'Go to references' doesn't work with dynamic imports
 const Organization = lazy(() => import('./routes/organization'));
 const Project = lazy(() => import('./routes/project'));
 const Workspace = lazy(() => import('./routes/workspace'));
@@ -834,6 +835,13 @@ async function renderApp() {
                                 ],
                               },
                               {
+                                path: 'move',
+                                action: async (...args) =>
+                                  (
+                                    await import('./routes/actions')
+                                  ).moveWorkspaceAction(...args),
+                              },
+                              {
                                 path: 'duplicate',
                                 action: async (...args) =>
                                   (
@@ -1118,6 +1126,7 @@ async function renderApp() {
 
   // Store the last location in local storage
   router.subscribe(({ location, navigation }) => {
+    console.log('navigating', location.pathname, navigation.location?.pathname);
     const match = matchPath(
       {
         path: '/organization/:organizationId',
